@@ -7,7 +7,7 @@ class BST {
         ~BST();
 
         void insert(int key);
-        void remoce(int key);
+        void remove(int key);
         bool search(int key) const;
         void printInOrder() const;
         void printTree() const;
