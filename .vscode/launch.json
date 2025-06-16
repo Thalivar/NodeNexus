@@ -1,50 +1,25 @@
 {
-  "version": "0.2.0",
-  "configurations": [
+  "version": "2.0.0",
+  "tasks": [
     {
-      "name": "C/C++ Runner: Debug Session",
-      "type": "cppdbg",
-      "request": "launch",
-      "args": [],
-      "stopAtEntry": false,
-      "externalConsole": true,
-      "cwd": "c:/Users/Gebruiker/Code Projects/NodeNexus/NodeNexus",
-      "program": "c:/Users/Gebruiker/Code Projects/NodeNexus/NodeNexus/build/Debug/outDebug",
-      "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
-    },
-    {
-      "name": "C/C++: g++.exe build and debug active file",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "C:\\MinGW\\bin",
-      "environment": [],
-      "externalConsole": false,
-      "MIMode": "gdb",
-      "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        },
-        {
-          "description": "Set Disassembly Flavor to Intel",
-          "text": "-gdb-set disassembly-flavor intel",
-          "ignoreFailures": true
-        }
+      "label": "Build NodeNexus",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-I", "include",
+        "src/main.cpp",
+        "src/bst.cpp",
+        "src/avltree.cpp",
+        "-o", "build/main.exe"
       ],
-      "preLaunchTask": "C/C++: g++.exe build active file"
+      "options": {
+        "cwd": "${workspaceFolder}"  // <- set working directory to project root
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
     }
   ]
 }

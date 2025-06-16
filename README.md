@@ -3,6 +3,8 @@
 **NodeNexus** is a learning-focused C++ project that explores the core concepts and mechanics behind **Binary Search Trees (BSTs)** and **AVL Trees**.
 It features basic implementations of both structures, including insertion, deletion, and search operations — with simple ASCII visualizations to illustrate how nodes are organized.
 
+Unfortuntaly due to technical issues regarding some compiler issues i'm having right now, i decided to continue with this project in python for now untill i fix the isseus.
+
 ---
 
 ## 🧠 Project Goals
