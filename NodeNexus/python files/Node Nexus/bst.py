@@ -42,7 +42,7 @@ class BST:
     def _findMin(self, node):
         while node.get_left() is not None:
             node = node.get_left()
-            
+
         return node
     
     def _deleteRecusrive(self, node, data):
@@ -69,10 +69,105 @@ class BST:
         
         return
     
+    def _inOrderRecursive(self, node, result):
+        if node is not None:
+            self._inOrderRecursive(node.get_left(), result)
+            result.append(node.get_data())
+            self._inOrderRecursive(node.get_right(), result)
 
+    def _preOrderRecursive(self, node, result):
+        if node is not None:
+            result.append(node.get_data())
+            self._preOrderRecursive(node.get_left(), result)
+            self._preOrderRecursive(node.get_right(), result)
+
+    def _postOrderRecursive(self, node, result):
+        if node is not None:
+            self._postOrderRecursive(node.get_left(), result)
+            self._postOrderRecursive(node.get_right(), result)
+            result.append(node.get_data())
     
     def insert(self, data):
         if self.search(data):
             return False
         
         self._root = self._insert_recursive()
+
+    def search(self, data):
+        return self._searchRecursive(self._root, data)
+    
+    def delete(self, data):
+        if not self.search(data):
+            return False
+        
+        self._root = self._deleteRecusrive(self._root, data)
+        self._count -= 1
+        return True
+    
+    def breadthFirstTraversal(self):
+        if self._root is None:
+            return []
+        
+        result = []
+        queue = Queue()
+        queue.enqueue(self._root)
+
+        while not queue.isListEmpty():
+            current = queue.dequeue()
+            result.append(current.get_data())
+
+            if current.get_left() is not None:
+                queue.enqueue(current.get_left())
+            if current.get_right() is not None:
+                queue.enqueue(current.get_right())
+        
+        return result
+    
+    def inOrderTraversal(self):
+        result = []
+        self._inOrderRecursive(self._root, result)
+        
+        return result
+    
+    def preOrderTraversal(self):
+        result = []
+        self._preOrderRecursive(self._root, result)
+
+        return result
+    
+    def postOrderTraversal(self):
+        result = []
+        self._postOrderRecursive(self._root, result)
+
+        return result
+    
+    def printTree(self, output_file = None):
+        traversals = {
+            "Breadth-First": self.breadthFirstTraversal(),
+            "In-Order": self.inOrderTraversal(),
+            "Pre-Order": self.preOrderTraversal(),
+            "Post-Order": self.postOrderTraversal()
+        }
+
+        for name, data in traversals.items():
+            output = f"\n{name} Traversal: \n"
+
+            if data:
+                output += "\t".join(str(item) for item in data)
+            else:
+                output += "The tree is empty"
+
+            print(output)
+
+            if output_file:
+                output_file.write(output + "\n")
+    
+    def count(self):
+        return self._count
+    
+    def is_empty(self):
+        return self._count == 0
+    
+    def empty(self):
+        self._root = None
+        self._count = 0
