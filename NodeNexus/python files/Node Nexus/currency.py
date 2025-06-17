@@ -24,7 +24,7 @@ class Currency:
             raise TypeError("You can only add Currency objects.")
         
         total = (self._whole_part * 100 + self._fractional_part 
-                 + other._hole_part * 100 + other.fractional_part)
+                 + other._whole_part * 100 + other.fractional_part)
         
         self._whole_part = total // 100
         self._fractional_part = total % 100
@@ -34,13 +34,13 @@ class Currency:
             raise TypeError("You can only subtract Currency objects.")
         
         total = (self._whole_part * 100 + self._fractional_part
-                  - other.whole_part * 100 + other.fractional_part)
+                  - other.whole_part * 100 - other.fractional_part)
 
         if total < 0:
             raise ValueError("The subtraction result would be negative.")
         
         self._whole_part = total // 100
-        self._fractional_part = total & 100
+        self._fractional_part = total % 100
 
     def get_currency_name(self):
         raise NotImplementedError("Subclasses must implement get_currency_name")

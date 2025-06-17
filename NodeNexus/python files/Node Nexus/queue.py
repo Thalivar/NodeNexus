@@ -14,7 +14,7 @@ class Queue(SingleLinkedList):
         self.__addCurrency(currency, self._count)
 
     def deQueue(self):
-        return self.__removeCurrency
+        return self.__removeCurrency(0)
     
     def peekFront(self):
         if self.isListEmpty():

@@ -45,9 +45,9 @@ class BST:
 
         return node
     
-    def _deleteRecusrive(self, node, data):
-        if not self.search(data):
-            return False
+    def _deleteRecursive(self, node, data):
+        if node is None:
+            return None
         
         data_value = self._getCurrencyValue(data)
         node_value = self._getCurrencyValue(node.get_data())
@@ -67,7 +67,7 @@ class BST:
             node.set_data(successor.get_data())
             node.set_right(self._deleteRecusrive(node.get_right(), successor.get_data()))
         
-        return
+        return node
     
     def _inOrderRecursive(self, node, result):
         if node is not None:
@@ -91,7 +91,9 @@ class BST:
         if self.search(data):
             return False
         
-        self._root = self._insert_recursive()
+        self._root = self._insertRecursive(self._root, data)
+        self._count += 1
+        return True
 
     def search(self, data):
         return self._searchRecursive(self._root, data)
@@ -110,16 +112,16 @@ class BST:
         
         result = []
         queue = Queue()
-        queue.enqueue(self._root)
+        queue.enQueue(self._root)
 
         while not queue.isListEmpty():
-            current = queue.dequeue()
+            current = queue.deQueue()
             result.append(current.get_data())
 
             if current.get_left() is not None:
-                queue.enqueue(current.get_left())
+                queue.enQueue(current.get_left())
             if current.get_right() is not None:
-                queue.enqueue(current.get_right())
+                queue.enQueue(current.get_right())
         
         return result
     
