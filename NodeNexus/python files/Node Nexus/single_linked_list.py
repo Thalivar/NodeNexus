@@ -108,4 +108,23 @@ class SingleLinkedList:
         
         return current.data
     
+    def stringifyList(self):
+        result, current = "", self._start
+
+        while current:
+            result += str(current.data) + "\t"
+            current = current.next
+
+        return result.strip()
+
+    def isListEmpty(self):
+        return self._count == 0
+
+    def countCurrency(self):
+        return self._count
+
+    def emptyList(self):
+        self._start = None
+        self._end = None
+        self._count = 0    
     
