@@ -114,6 +114,24 @@ class BST:
         
         return f"{currency.whole_part}.{currency.fractional_part:02d}"
     
+    def _buildTreeLines(self, node, lines, depth, prefix):
+        if node is None:
+            return
+        
+        indent = " " * depth
+        lines.append(f"{indent}{prefix}${self._formatCurrencyShort(node.get_data())}")
+
+        if node.get_left() is not None or node.get_right() is not None:
+            if node.get_left() is not None:
+                self._buildTreeLines(node.get_left(), lines, depth + 1, "L──")
+            else:
+                lines.append(F"{'  ' * (depth + 1)}L── (Empty)")
+
+            if node.get_right() is not None:
+                self._buildTreeLines(node.get_right(), lines, depth + 1, "R──")
+            else:
+                lines.append(F"{'  ' * (depth + 1)}R── (Empty)")
+    
     def printVisualTree(self, output_file = None):
         if self._root is None:
             message = "The tree is empy."
@@ -125,6 +143,7 @@ class BST:
         
         height = self._getTreeHeight(self._root)
         header = "\n" + "="*35 + "\n" + "Visual Tree Structure".center(35) + "\n" + "="*35
+        print(header)
 
         for level in range(height):
             nodes = []
@@ -140,6 +159,44 @@ class BST:
                 else:
                     lines += "     "
                 
+                if i < len(nodes) - 1:
+                    lines += " " * spaceBetween
+            
+            levelHeader = f"Level {level}"
+            fullLine = levelHeader + lines.center(35 - len(levelHeader))
+            print(fullLine)
+            if output_file:
+                output_file.write(fullLine + "\n")
+            
+        print("="*35)
+        if output_file:
+            output_file.write("="*35 + "\n")
+    
+    def printCompactTree(self, output_file = None):
+        if self._root is None:
+            message = "The tree is empty"
+            print(message)
+
+            if output_file:
+                output_file.write(message + "\n")
+            return
+        
+        lines = []
+        self._buildTreeLines(self._root, lines, 0, "Root: ")
+
+        header = "\n" + "=" * 35 + "\n" + "Compact Tree Structure".center(35) + "\n" + "=" * 35
+        print(header)
+        if output_file:
+            output_file.write(header + "\n")
+
+        for line in lines:
+            print(line)
+            if output_file:
+                output_file.write(line + "\n")
+        
+        print("=" * 35)
+        if output_file:
+            output_file.write("=" * 35 + "\n")
 
     def insert(self, data):
         if self.search(data):
