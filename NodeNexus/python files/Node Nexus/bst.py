@@ -86,7 +86,61 @@ class BST:
             self._postOrderRecursive(node.get_left(), result)
             self._postOrderRecursive(node.get_right(), result)
             result.append(node.get_data())
+
+    # == ASCII Art Tree Visualization Methods ===
+
+    def _getTreeHeight(self, node):
+        if node is None:
+            return 0
+        
+        return 1 + max(self._getTreeHeight(node.get_left()),
+                       self._getTreeHeight(node.get_right()))
     
+    def _collectingNodesByLevel(self, node, level, targetLevel, nodes):
+        if node is None:
+            if level == targetLevel:
+                nodes.append(None)
+            return
+        
+        if level == targetLevel:
+            nodes.append(node)
+        else:
+            self._collectingNodesByLevel(node.get_left(), level + 1, targetLevel, nodes)
+            self._collectingNodesByLevel(node.get_right(), level + 1, targetLevel, nodes)
+
+    def _formatCurrencyShort(self, currency):
+        if currency is None:
+            return "   "
+        
+        return f"{currency.whole_part}.{currency.fractional_part:02d}"
+    
+    def printVisualTree(self, output_file = None):
+        if self._root is None:
+            message = "The tree is empy."
+            print(message)
+
+            if output_file:
+                output_file.write(message + "\n")
+            return
+        
+        height = self._getTreeHeight(self._root)
+        header = "\n" + "="*35 + "\n" + "Visual Tree Structure".center(35) + "\n" + "="*35
+
+        for level in range(height):
+            nodes = []
+            self._collectingNodesByLevel(self._root, 0, level, nodes)
+
+            spaceBetween= max(1, (60 // max(1, len(nodes))) - 6)
+            lines = ""
+
+            for i, node in enumerate(nodes):
+                if node is not None:
+                    nodeSTR = self._formatCurrencyShort(node.get_data())
+                    lines += f"${nodeSTR:>6}"
+                else:
+                    lines += "     "
+                
+
     def insert(self, data):
         if self.search(data):
             return False
