@@ -129,6 +129,7 @@ class BST:
         else:
             lines.append(f"{indent}{prefix}{currencySTR}")
 
+        # Adds the chil nodes if they exist
         if node.get_left() is not None or node.get_right() is not None:
             if node.get_left() is not None:
                 self._buildCompactTreeLines(self.get_left(), lines, depth + 1, "├─L: ")
@@ -141,41 +142,67 @@ class BST:
                 lines.append(f"{indent}    └─R: (empty)")
 
 
-    def _drawTree(self, node, lines, x, y, direction):
+    def _drawTree(self, node, lines, x, y):
         if node is None:
             return
         
+        # Ensures that we will have enough lines
         while len(lines) <= y:
             lines.append(" " * 80)
         
+        # Formats the node value
         nodeSTR = self._formatCurrencyShort(node.get_data())
 
+        # This ensures the line is long enough
         while len(lines[y]) < x + len(nodeSTR):
             lines[y] += " "
 
+        # Places the node
         lines[y] = lines[y][:x] + nodeSTR + lines[y][x + len(nodeSTR):]
 
+        # Calculates the positions of the children
         left_offset = 8
         right_offset = 8
 
-        if node.get_left() is not None or node.get_right() is not None:
-            if node.get_left() is not None:
-                leftX = self._drawTree(node.get_left(), lines, x - 10, y + 2, "L")
+        # Draw the left child
+        if node.get_left() is not None:
+            left_x = x - left_offset
+            left_y = y + 2
 
-                if y + 1 < len(lines):
-                    while len(lines[y + 1]) < x + 2:
-                        lines[y + 1] += " "
-                    lines[y + 1] = lines[y + 1][:x] + "┌─" + lines[y + 1][x + 2:]
-        
-            if node.get_right() is not None:
-                rightX = self._drawTree(node.get_right(), lines, x + 10, y + 2, "R")
+            # Draws the connection line
+            if len(lines) <= y + 1:
+                lines.append(" " + 80)
 
-                if y + 1 < len(lines):
-                    while len(lines[y + 1]) < x + len(nodeSTR):
-                        lines[y + 1] += " "
-                    lines[y + 1] = lines[y + 1][:x + len(nodeSTR) - 2] + "─┐" + lines[y + 1][x + len(nodeSTR):]
+            # Draws the connection lines
+            while len(lines[y + 1]) < x:
+                lines[y + 1] += " "
+
+            # Adds the branch ASCII characters
+            lines[y + 1] = lines[ y + 1][:x - 2] + "┌─" + lines[y + 1][x:]
+
+            # Will draw the left subtree recursively
+            self._drawTree(node.get_left(), lines, left_x, left_y)
         
-        return x
+        # Draws the right child
+        if node.get_right() is not None:
+            right_x = x + right_offset
+            right_y = y + 2
+
+            # Draws the connection line
+            if len(lines) <= y + 1:
+                lines.append(" " + 80)
+            
+            # Will ensure the line is long enough
+            while len(lines[y + 1]) < x + len(nodeSTR) + 2:
+                lines[y + 1] += " "
+
+            # Will add the ASCCII branch character
+            lines[y + 1] = lines[y + 1][:x + len(nodeSTR)] + "─┐" + lines[y + 1][x + len(nodeSTR) + 2:]
+
+            # Will draw the right subtree recursively
+            self._drawTree(node.get_right(), lines, right_x, right_y)
+        
+
 
     def printVisualTree(self, output_file = None):
         if self._root is None:
@@ -193,11 +220,13 @@ class BST:
             nodes = []
             self._collectingNodesByLevel(self._root, 0, level, nodes)
 
+            # Creates a level header
             levelHeader = f"\nLevel {level}:"
             print(levelHeader)
             if output_file:
                 output_file.write(levelHeader + "\n")
 
+            # Formats all the nodes for this level
             nodeStrings = []
             for node in nodes:
                 if node is not None:
@@ -205,6 +234,7 @@ class BST:
                 else:
                     nodeStrings.append("(empty)")
             
+            # Prints out the nodes with some proper spacing
             if nodeStrings:
                 nodeLine = "  " + "    ".join(nodeStrings)
                 print(nodeLine)
@@ -219,13 +249,12 @@ class BST:
         if self._root is None:
             message = "The tree is empty"
             print(message)
-
             if output_file:
                 output_file.write(message + "\n")
             return
         
         lines = []
-        self._buildTreeLines(self._root, lines, 0, "")
+        self._buildCompactTreeLines(self._root, lines, 0, "")
 
         header = "\n" + "=" * 35 + "\n" + "Compact Tree Structure".center(35) + "\n" + "=" * 35
         print(header)
@@ -352,3 +381,9 @@ class BST:
     def empty(self):
         self._root = None
         self._count = 0
+
+    def printAllTreeFormats(self, output_file = None):
+        self.printTree(output_file)
+        self.printVisualTree(output_file)
+        self.printASCIITree(output_file)
+        self.printCompactTree(output_file)
