@@ -16,12 +16,12 @@ class BST:
             return BST_Node(data)
         
         data_value = self._getCurrencyValue(data)
-        node_value = self._getCurrencyValue(node.get_data())
+        node_value = self._getCurrencyValue(node.getData())
 
         if data_value < node_value:
-            node.set_left(self._insertRecursive(node.get_left(), data))
+            node.setLeft(self._insertRecursive(node.getLeft(), data))
         else:
-            node.set_right(self._insertRecursive(node.get_right(), data))
+            node.setRight(self._insertRecursive(node.getRight(), data))
 
         return node
     
@@ -30,18 +30,18 @@ class BST:
             return False
         
         data_value = self._getCurrencyValue(data)
-        node_value = self._getCurrencyValue(node.get_data())
+        node_value = self._getCurrencyValue(node.getData())
 
         if data_value == node_value:
             return True
         elif data_value < node_value:
-            return self._searchRecursive(node.get_left(), data)
+            return self._searchRecursive(node.getLeft(), data)
         else:
-            return self._searchRecursive(node.get_right(), data)
+            return self._searchRecursive(node.getRight(), data)
         
     def _findMin(self, node):
-        while node.get_left() is not None:
-            node = node.get_left()
+        while node.getLeft() is not None:
+            node = node.getLeft()
 
         return node
     
@@ -50,42 +50,42 @@ class BST:
             return None
         
         data_value = self._getCurrencyValue(data)
-        node_value = self._getCurrencyValue(node.get_data())
+        node_value = self._getCurrencyValue(node.getData())
 
         if data_value < node_value:
-            node.set_left(self._deleteRecursive(node.get_left(), data))
+            node.setLeft(self._deleteRecursive(node.getLeft(), data))
         elif data_value > node_value:
-            node.set_right(self._deleteRecursive(node.get_right(), data))
+            node.setRight(self._deleteRecursive(node.getRight(), data))
         else:
 
-            if node.get_left() is None:
-                return node.get_right()
-            elif node.get_right() is None:
-                return node.get_left()
+            if node.getLeft() is None:
+                return node.getRight()
+            elif node.getRight() is None:
+                return node.getLeft()
             
-            successor = self._findMin(node.get_right())
-            node.set_data(successor.get_data())
-            node.set_right(self._deleteRecursive(node.get_right(), successor.get_data()))
+            successor = self._findMin(node.getRight())
+            node.setData(successor.getData())
+            node.setRight(self._deleteRecursive(node.getRight(), successor.getData()))
         
         return node
     
     def _inOrderRecursive(self, node, result):
         if node is not None:
-            self._inOrderRecursive(node.get_left(), result)
-            result.append(node.get_data())
-            self._inOrderRecursive(node.get_right(), result)
+            self._inOrderRecursive(node.getLeft(), result)
+            result.append(node.getData())
+            self._inOrderRecursive(node.getRight(), result)
 
     def _preOrderRecursive(self, node, result):
         if node is not None:
-            result.append(node.get_data())
-            self._preOrderRecursive(node.get_left(), result)
-            self._preOrderRecursive(node.get_right(), result)
+            result.append(node.getData())
+            self._preOrderRecursive(node.getLeft(), result)
+            self._preOrderRecursive(node.getRight(), result)
 
     def _postOrderRecursive(self, node, result):
         if node is not None:
-            self._postOrderRecursive(node.get_left(), result)
-            self._postOrderRecursive(node.get_right(), result)
-            result.append(node.get_data())
+            self._postOrderRecursive(node.getLeft(), result)
+            self._postOrderRecursive(node.getRight(), result)
+            result.append(node.getData())
 
     # == ASCII Art Tree Visualization Methods ===
 
@@ -93,8 +93,8 @@ class BST:
         if node is None:
             return 0
         
-        return 1 + max(self._getTreeHeight(node.get_left()),
-                       self._getTreeHeight(node.get_right()))
+        return 1 + max(self._getTreeHeight(node.getLeft()),
+                       self._getTreeHeight(node.getRight()))
     
     def _collectingNodesByLevel(self, node, level, targetLevel, nodes):
         if level == targetLevel:
@@ -108,8 +108,8 @@ class BST:
 
         else:
             if level < targetLevel:
-                self._collectingNodesByLevel(node.get_left(), level + 1, targetLevel, nodes)
-                self._collectingNodesByLevel(node.get_right(), level + 1, targetLevel, nodes)
+                self._collectingNodesByLevel(node.getLeft(), level + 1, targetLevel, nodes)
+                self._collectingNodesByLevel(node.getRight(), level + 1, targetLevel, nodes)
 
     def _formatCurrencyShort(self, currency):
         if currency is None:
@@ -122,7 +122,7 @@ class BST:
             return
         
         indent = "    " * depth
-        currencySTR = self._formatCurrencyShort(node.get_data())
+        currencySTR = self._formatCurrencyShort(node.getData())
 
         if depth == 0:
             lines.append(f"Root: {currencySTR}")
@@ -130,14 +130,14 @@ class BST:
             lines.append(f"{indent}{prefix}{currencySTR}")
 
         # Adds the chil nodes if they exist
-        if node.get_left() is not None or node.get_right() is not None:
-            if node.get_left() is not None:
-                self._buildCompactTreeLines(self.get_left(), lines, depth + 1, "├─L: ")
+        if node.getLeft() is not None or node.getRight() is not None:
+            if node.getLeft() is not None:
+                self._buildCompactTreeLines(node.getLeft(), lines, depth + 1, "├─L: ")
             else:
                 lines.append(f"{indent}    ├─L: (empty)")
 
-            if node.get_right() is not None:
-                self._buildCompactTreeLines(self.get_right(), lines, depth + 1, "└─R: ")
+            if node.getRight() is not None:
+                self._buildCompactTreeLines(node.getRight(), lines, depth + 1, "└─R: ")
             else:
                 lines.append(f"{indent}    └─R: (empty)")
 
@@ -151,7 +151,7 @@ class BST:
             lines.append(" " * 80)
         
         # Formats the node value
-        nodeSTR = self._formatCurrencyShort(node.get_data())
+        nodeSTR = self._formatCurrencyShort(node.getData())
 
         # This ensures the line is long enough
         while len(lines[y]) < x + len(nodeSTR):
@@ -165,13 +165,13 @@ class BST:
         right_offset = 8
 
         # Draw the left child
-        if node.get_left() is not None:
+        if node.getLeft() is not None:
             left_x = x - left_offset
             left_y = y + 2
 
             # Draws the connection line
             if len(lines) <= y + 1:
-                lines.append(" " + 80)
+                lines.append(" " * 80)
 
             # Draws the connection lines
             while len(lines[y + 1]) < x:
@@ -181,16 +181,16 @@ class BST:
             lines[y + 1] = lines[ y + 1][:x - 2] + "┌─" + lines[y + 1][x:]
 
             # Will draw the left subtree recursively
-            self._drawTree(node.get_left(), lines, left_x, left_y)
+            self._drawTree(node.getLeft(), lines, left_x, left_y)
         
         # Draws the right child
-        if node.get_right() is not None:
+        if node.getRight() is not None:
             right_x = x + right_offset
             right_y = y + 2
 
             # Draws the connection line
             if len(lines) <= y + 1:
-                lines.append(" " + 80)
+                lines.append(" " * 80)
             
             # Will ensure the line is long enough
             while len(lines[y + 1]) < x + len(nodeSTR) + 2:
@@ -200,7 +200,7 @@ class BST:
             lines[y + 1] = lines[y + 1][:x + len(nodeSTR)] + "─┐" + lines[y + 1][x + len(nodeSTR) + 2:]
 
             # Will draw the right subtree recursively
-            self._drawTree(node.get_right(), lines, right_x, right_y)
+            self._drawTree(node.getRight(), lines, right_x, right_y)
         
 
 
@@ -230,7 +230,7 @@ class BST:
             nodeStrings = []
             for node in nodes:
                 if node is not None:
-                    nodeStrings.append(self._formatCurrencyShort(node.get_data()))
+                    nodeStrings.append(self._formatCurrencyShort(node.getData()))
                 else:
                     nodeStrings.append("(empty)")
             
@@ -324,12 +324,12 @@ class BST:
 
         while not queue.isListEmpty():
             current = queue.deQueue()
-            result.append(current.get_data())
+            result.append(current.getData())
 
-            if current.get_left() is not None:
-                queue.enQueue(current.get_left())
-            if current.get_right() is not None:
-                queue.enQueue(current.get_right())
+            if current.getLeft() is not None:
+                queue.enQueue(current.getLeft())
+            if current.getRight() is not None:
+                queue.enQueue(current.getRight())
         
         return result
     
@@ -375,7 +375,7 @@ class BST:
     def count(self):
         return self._count
     
-    def is_empty(self):
+    def isEmpty(self):
         return self._count == 0
     
     def empty(self):
@@ -384,6 +384,7 @@ class BST:
 
     def printAllTreeFormats(self, output_file = None):
         self.printTree(output_file)
-        self.printVisualTree(output_file)
+        # self.printVisualTree(output_file)
+        # ^ I do not like the result it puts out right now, might fix it in the future
         self.printASCIITree(output_file)
         self.printCompactTree(output_file)

@@ -35,8 +35,10 @@ def interactiveMenu(bst, output_file):
         print("1.) Add Currency")
         print("2.) Search Currency")
         print("3.) Delete Currency")
-        print("4.) Print Currency")
-        print("5.) Exit The Program")
+        print("4.) Print ASCII Tree Traversals")
+        print("5.) Print Compact Tree Traversals")
+        print("6.) Print Visual Tree Traversals (Not working ATM)")
+        print("7.) Exit The Program")
 
         choice = input("\nEnter your choice please (1-5): ").strip()
 
@@ -54,6 +56,7 @@ def interactiveMenu(bst, output_file):
             
             else:
                 message = f"The duplicate currency was ignored: {currency}"
+                printToBoth(message, output_file)
         
         elif choice == "2":
             printToBoth("\n=== Search Currency ===", output_file)
@@ -87,12 +90,22 @@ def interactiveMenu(bst, output_file):
                 printToBoth(message, output_file)
 
         elif choice == "4":
-            printToBoth("\n=== All Traversals ===", output_file)
-            bst.printTree(output_file)
+            printToBoth("\n=== ASCII Tree Traversals ===", output_file)
+            bst.printASCIITree(output_file)
 
         elif choice == "5":
+            printToBoth("\n=== Compact Tree Traversals ===", output_file)
+            bst.printCompactTree(output_file)
+
+        elif choice == "6":
+            printToBoth("\n=== Visual Tree Traversals ===", output_file)
+            print("Apologies for this inconveniece, this feature is not working at the moment.")
+            
+            #bst.printVisualTree(output_file)
+
+        elif choice == "7":
             printToBoth("\n=== Final Tree State ===", output_file)
-            bst.printTree(output_file)
+            bst.printAllTreeFormats(output_file)
             printToBoth("\nThank you for using my BST/AVL Demo!", output_file)
             break
 

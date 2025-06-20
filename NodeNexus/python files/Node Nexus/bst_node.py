@@ -7,24 +7,24 @@ class BST_Node:
 
     # === Getters ===
 
-    def get_data(self):
+    def getData(self):
         return self._data
     
-    def get_right(self):
+    def getRight(self):
         return self._right
     
-    def get_left(self):
+    def getLeft(self):
         return self._left
     
     # === Setters ===
 
-    def set_data(self, data):
+    def setData(self, data):
         self._data = data
 
-    def set_right(self, right_node):
+    def setRight(self, right_node):
         self._right = right_node
 
-    def set_left(self, left_node):
+    def setLeft(self, left_node):
         self._left = left_node
 
     def __str__(self):
