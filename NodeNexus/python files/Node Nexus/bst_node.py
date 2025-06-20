@@ -16,7 +16,6 @@ class BST_Node:
     def get_left(self):
         return self._left
     
-
     # === Setters ===
 
     def set_data(self, data):

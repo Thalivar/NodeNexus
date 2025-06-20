@@ -53,7 +53,7 @@ def interactiveMenu(bst, output_file):
                 printToBoth(message, output_file)
             
             else:
-                message = f"The duplicate currenct was ignored: {currency}"
+                message = f"The duplicate currency was ignored: {currency}"
         
         elif choice == "2":
             printToBoth("\n=== Search Currency ===", output_file)
@@ -97,16 +97,13 @@ def interactiveMenu(bst, output_file):
             break
 
         else:
-            print("That is a invalid choice. Please enter 1-5.")
+            print("That is an invalid choice. Please enter 1-5.")
 
 def main():
-    print("\n" + "="*35)
-    print("NodeNexus - BST/AVL Demo")
-    print("Author: Enrico Jeroense")
-    print("="*35)
 
     try:
-        output_file = open("output.txt", "w")
+        output_file = open("output.txt", "w", encoding="utf-8")
+        printToBoth("="*35, output_file)
         printToBoth("NodeNexus - BST/AVL Tree Demo", output_file)
         printToBoth("Author: Enrico Jeroense", output_file)
         printToBoth("="*35, output_file)
@@ -128,8 +125,8 @@ def main():
                 printToBoth(message, output_file)
 
         printToBoth(f"\nTotal nodes in Tree: {bst.count()}", output_file)
-        printToBoth("\n=== Initial Traverls (After Seeding) ===", output_file)
-        bst.printTree(output_file)
+        printToBoth("\n=== Initial Traversals(After Seeding) ===", output_file)
+        bst.printASCIITree(output_file)
 
         interactiveMenu(bst, output_file)
 
@@ -138,7 +135,7 @@ def main():
         return
     
     finally:
-        if "output_files" in locals():
+        if "output_file" in locals():
             output_file.close()
             print("Output is being written into output.txt")
 

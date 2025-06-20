@@ -53,9 +53,9 @@ class BST:
         node_value = self._getCurrencyValue(node.get_data())
 
         if data_value < node_value:
-            node.set_left(self._deleteRecusrive(node.get_left(), data))
+            node.set_left(self._deleteRecursive(node.get_left(), data))
         elif data_value > node_value:
-            node.set_right(self._deleteRecusrive(node.get_right(), data))
+            node.set_right(self._deleteRecursive(node.get_right(), data))
         else:
 
             if node.get_left() is None:
@@ -65,7 +65,7 @@ class BST:
             
             successor = self._findMin(node.get_right())
             node.set_data(successor.get_data())
-            node.set_right(self._deleteRecusrive(node.get_right(), successor.get_data()))
+            node.set_right(self._deleteRecursive(node.get_right(), successor.get_data()))
         
         return node
     
@@ -110,7 +110,7 @@ class BST:
 
     def _formatCurrencyShort(self, currency):
         if currency is None:
-            return "   "
+            return "None"
         
         return f"{currency.whole_part}.{currency.fractional_part:02d}"
     
@@ -131,10 +131,43 @@ class BST:
                 self._buildTreeLines(node.get_right(), lines, depth + 1, "R──")
             else:
                 lines.append(F"{'  ' * (depth + 1)}R── (Empty)")
-    
+
+    def _drawTree(self, node, lines, x, y, direction):
+        if node is None:
+            return x
+        
+        while len(lines) <= y:
+            lines.append(" " * 80)
+        
+        nodeSTR = F"${self._formatCurrencyShort(node.get_data())}"
+
+        while len(lines[y]) < x + len(nodeSTR):
+            lines[y] += " "
+
+        lines[y] = lines[y][:x] + nodeSTR + lines[y][x + len(nodeSTR):]
+
+        if node.get_left() is not None or node.get_right() is not None:
+            if node.get_left() is not None:
+                leftX = self._drawTree(node.get_left(), lines, x - 10, y + 2, "L")
+
+                if y + 1 < len(lines):
+                    while len(lines[y + 1]) < x + 2:
+                        lines[y + 1] += " "
+                    lines[y + 1] = lines[y + 1][:x] + "┌─" + lines[y + 1][x + 2:]
+        
+            if node.get_right() is not None:
+                rightX = self._drawTree(node.get_right(), lines, x + 10, y + 2, "R")
+
+                if y + 1 < len(lines):
+                    while len(lines[y + 1]) < x + len(nodeSTR):
+                        lines[y + 1] += " "
+                    lines[y + 1] = lines[y + 1][:x + len(nodeSTR) - 2] + "─┐" + lines[y + 1][x + len(nodeSTR):]
+        
+        return x
+
     def printVisualTree(self, output_file = None):
         if self._root is None:
-            message = "The tree is empy."
+            message = "The tree is empty."
             print(message)
 
             if output_file:
@@ -182,7 +215,7 @@ class BST:
             return
         
         lines = []
-        self._buildTreeLines(self._root, lines, 0, "Root: ")
+        self._buildTreeLines(self._root, lines, 0, "")
 
         header = "\n" + "=" * 35 + "\n" + "Compact Tree Structure".center(35) + "\n" + "=" * 35
         print(header)
@@ -197,6 +230,31 @@ class BST:
         print("=" * 35)
         if output_file:
             output_file.write("=" * 35 + "\n")
+
+    def printASCIITree(self, output_file = None):
+        if self._root is None:
+            message = "The tree is empty"
+            print(message)
+            if output_file:
+                output_file.write(message + "\n")
+            return
+        
+        lines = []
+        self._drawTree(self._root, lines, 0, 0, "M")
+        
+        header = "\n" + "="*35 + "\n" + "ASCII Art Tree".center(35) + "\n" + "="*35 + "\n"
+        print(header)
+        if output_file:
+            output_file.write(header + "\n")
+
+        for line in lines:
+            print(line.rstrip())
+            if output_file:
+                output_file.write(line.rstrip() + "\n")
+
+        print("="*35)
+        if output_file:
+            output_file.write("="*35 + "\n")
 
     def insert(self, data):
         if self.search(data):
@@ -213,7 +271,7 @@ class BST:
         if not self.search(data):
             return False
         
-        self._root = self._deleteRecusrive(self._root, data)
+        self._root = self._deleteRecursive(self._root, data)
         self._count -= 1
         return True
     
