@@ -97,16 +97,19 @@ class BST:
                        self._getTreeHeight(node.get_right()))
     
     def _collectingNodesByLevel(self, node, level, targetLevel, nodes):
-        if node is None:
-            if level == targetLevel:
-                nodes.append(None)
-            return
-        
         if level == targetLevel:
             nodes.append(node)
+            return
+        
+        if node is None:
+            if level < targetLevel:
+                self._collectingNodesByLevel(None, level + 1, targetLevel, nodes)
+                self._collectingNodesByLevel(None, level + 1, targetLevel, nodes)
+
         else:
-            self._collectingNodesByLevel(node.get_left(), level + 1, targetLevel, nodes)
-            self._collectingNodesByLevel(node.get_right(), level + 1, targetLevel, nodes)
+            if level < targetLevel:
+                self._collectingNodesByLevel(node.get_left(), level + 1, targetLevel, nodes)
+                self._collectingNodesByLevel(node.get_right(), level + 1, targetLevel, nodes)
 
     def _formatCurrencyShort(self, currency):
         if currency is None:
@@ -114,37 +117,46 @@ class BST:
         
         return f"{currency.whole_part}.{currency.fractional_part:02d}"
     
-    def _buildTreeLines(self, node, lines, depth, prefix):
+    def _buildCompactTreeLines(self, node, lines, depth, prefix):
         if node is None:
             return
         
-        indent = " " * depth
-        lines.append(f"{indent}{prefix}${self._formatCurrencyShort(node.get_data())}")
+        indent = "    " * depth
+        currencySTR = self._formatCurrencyShort(node.get_data())
+
+        if depth == 0:
+            lines.append(f"Root: {currencySTR}")
+        else:
+            lines.append(f"{indent}{prefix}{currencySTR}")
 
         if node.get_left() is not None or node.get_right() is not None:
             if node.get_left() is not None:
-                self._buildTreeLines(node.get_left(), lines, depth + 1, "L──")
+                self._buildCompactTreeLines(self.get_left(), lines, depth + 1, "├─L: ")
             else:
-                lines.append(F"{'  ' * (depth + 1)}L── (Empty)")
+                lines.append(f"{indent}    ├─L: (empty)")
 
             if node.get_right() is not None:
-                self._buildTreeLines(node.get_right(), lines, depth + 1, "R──")
+                self._buildCompactTreeLines(self.get_right(), lines, depth + 1, "└─R: ")
             else:
-                lines.append(F"{'  ' * (depth + 1)}R── (Empty)")
+                lines.append(f"{indent}    └─R: (empty)")
+
 
     def _drawTree(self, node, lines, x, y, direction):
         if node is None:
-            return x
+            return
         
         while len(lines) <= y:
             lines.append(" " * 80)
         
-        nodeSTR = F"${self._formatCurrencyShort(node.get_data())}"
+        nodeSTR = self._formatCurrencyShort(node.get_data())
 
         while len(lines[y]) < x + len(nodeSTR):
             lines[y] += " "
 
         lines[y] = lines[y][:x] + nodeSTR + lines[y][x + len(nodeSTR):]
+
+        left_offset = 8
+        right_offset = 8
 
         if node.get_left() is not None or node.get_right() is not None:
             if node.get_left() is not None:
@@ -169,7 +181,6 @@ class BST:
         if self._root is None:
             message = "The tree is empty."
             print(message)
-
             if output_file:
                 output_file.write(message + "\n")
             return
@@ -182,26 +193,25 @@ class BST:
             nodes = []
             self._collectingNodesByLevel(self._root, 0, level, nodes)
 
-            spaceBetween= max(1, (60 // max(1, len(nodes))) - 6)
-            lines = ""
-
-            for i, node in enumerate(nodes):
-                if node is not None:
-                    nodeSTR = self._formatCurrencyShort(node.get_data())
-                    lines += f"${nodeSTR:>6}"
-                else:
-                    lines += "     "
-                
-                if i < len(nodes) - 1:
-                    lines += " " * spaceBetween
-            
-            levelHeader = f"Level {level}"
-            fullLine = levelHeader + lines.center(35 - len(levelHeader))
-            print(fullLine)
+            levelHeader = f"\nLevel {level}:"
+            print(levelHeader)
             if output_file:
-                output_file.write(fullLine + "\n")
+                output_file.write(levelHeader + "\n")
+
+            nodeStrings = []
+            for node in nodes:
+                if node is not None:
+                    nodeStrings.append(self._formatCurrencyShort(node.get_data()))
+                else:
+                    nodeStrings.append("(empty)")
             
-        print("="*35)
+            if nodeStrings:
+                nodeLine = "  " + "    ".join(nodeStrings)
+                print(nodeLine)
+                if output_file:
+                    output_file.write(nodeLine + "\n")
+
+        print("\n" + "="*35)
         if output_file:
             output_file.write("="*35 + "\n")
     
@@ -240,7 +250,7 @@ class BST:
             return
         
         lines = []
-        self._drawTree(self._root, lines, 0, 0, "M")
+        self._drawTree(self._root, lines, 35, 0)
         
         header = "\n" + "="*35 + "\n" + "ASCII Art Tree".center(35) + "\n" + "="*35 + "\n"
         print(header)
